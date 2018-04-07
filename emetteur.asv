@@ -21,13 +21,13 @@ b = b/max(b);
 W = 4*pi*1*(1/Tb)
 
 tb = -128:1:128; 
-tc = -Tb:(2*Tb)/(length(tb)-1):Tb;
-c = cos((pi/Tb)*4*2*tc);
-b1 = c.*b;
+tc = -Tb:(2*Tb)/length(tb):Tb
+c = cos(tb);
+%b1 = c.*b;
 length(b)
 
 figure
-        stem(tb, b1)
+        stem(tb, c)
         hold on
         stem(tb, b)
         grid
