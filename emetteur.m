@@ -16,15 +16,16 @@ MSG_symb = 2*MSG -1; % Codage des bits en symboles, si 0 --> -1, si 1 -->- +1
 %     axis([-0.002 inf -1.5 1.5])
 
 % === Cosinus surélevé ===
-b = rcosdesign(rolloff,span,sps,'normal');
-b = b/max(b);
-W = 4*pi*1*(1/Tb)
+b = rcosdesign(rolloff,span,sps,'normal');  % la fonction rcos
+b = b/max(b);  % la fonction ramenée à 1
+f = [0:N-1]
+f = f*((pi/Tb)*4*2)
 
 tb = -128:1:128; 
 tc = -Tb:(2*Tb)/(length(tb)-1):Tb;
-c = cos((pi/Tb)*4*2*tc);
+c = cos(f(2)*tc);
+f(2)
 b1 = c.*b;
-length(b)
 
 figure
         stem(tb, b1)
