@@ -1,8 +1,7 @@
-W = 4*pi*1*(1/Tb);
-x = linspace(0,2*Tb);
-y1 = sin(x);
-y2 = cos((pi/Tb)*3*x);
-
-
-figure
-plot(x,y1,x,y2)
+tb = [2 2 3 3 4 4];
+f = [1 2 3 4]
+N = 4;
+v = f;
+for i = 1:N
+   v = [v;f]
+end
