@@ -4,10 +4,10 @@
 
 
 Ms = [1,0,1,1,0]; % bits, nombre de bits de la séquence pilote d'une trame
-Md = 4; % nombre de bits de données dans une trame
+Md = 10; % nombre de bits de données dans une trame
 R = 1000; % bits/s, débit binaire
 Tb = 1/R; % secondes par bit 
-N = 4; % Nombre de canaux
+N = 2; % Nombre de canaux
 K = 4; % Nombre de modules sur le réseau
 
 
