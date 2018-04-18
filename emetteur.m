@@ -18,9 +18,13 @@ f = f*((pi/Tb)*4);  %Omega, coefficients des porteuses
 f = cos(f'.*tc) % Matrices de porteuses
      
 figure
+% suptitle('Exo Télécom')
   subplot(2,2,1) % Le message de symboles
     stem(T,MSG_symb, '-.or')
     axis([-0.002 inf -1.5 1.5])
+    title('Message')
+    
+    
   subplot(2,2,3)  % Les filtres FIR
     hold on 
         for freq = 1:N
@@ -30,6 +34,9 @@ figure
     grid
     xticks([-128 -64 0 64 128])
     axis([-128 128 -1 1])
+    title('Filtre FIR')
+    legend
+    
   subplot(2,2,2)  % Le message convolué avec le filtre FIR
     hold on
         for freq = 1:N
@@ -43,14 +50,17 @@ figure
                 convFirMat = [convFirMat;yo]; % matrice avec l'ensemble des message convolués
                 plot(yo);
             end
-
         end
-
     hold off
+    grid 
+    title('Message convolué avec filtre FIR')
+    legend
+     
   subplot(2,2,4)  % Le fft du message convulé
     hold on
         for freq = 1:N
             plot(abs(fft(convFirMat(freq,:)))) % Pour chaque canal, on prend l'absolu de la FFT.  
         end
     hold off
-
+    title('FFT du message convolué')
+     legend
