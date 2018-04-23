@@ -39,7 +39,7 @@ figure
     title('Filtre FIR')
     xlabel('xlabel')
     ylabel('ylabel')
-    legend('y = label1','y = label2)','Location','northwest')
+    legend('y = label1','y = label2)','Location','southwest')
     
   subplot(2,2,2)  % Le message convolué avec le filtre FIR
     hold on
@@ -71,4 +71,4 @@ figure
     title('FFT du message convolué')
     xlabel('xlabel')
     ylabel('ylabel')
-    legend('y = label1','y = label2)','Location','north')
+    legend('y = sin(x)','y = cos(x)','Location','southwest')
