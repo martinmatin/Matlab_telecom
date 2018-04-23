@@ -1,0 +1,24 @@
+%Projet Matlab Crappe Martin 
+
+
+
+% Canal fréquentiel = bande de fréquence déterminée sur le canal partagé
+clear all;
+
+% D´efinition des parametres de la simulation
+parametre;
+
+% Calcul des variables utiles d´ependant de ces param`etres
+setup;
+
+% Calcul des signaux dans l’´emetteur
+emetteur;
+
+% Passage à travers le canal
+% canal;
+
+% Calcul des op´erations effectu´ees dans le r´ecepteur
+% recepteur;
+
+% Affichage des r´esultats
+resultats;
