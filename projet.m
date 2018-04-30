@@ -5,6 +5,7 @@
 % Canal fréquentiel = bande de fréquence déterminée sur le canal partagé
 
 clear all;
+close all;
 
 % Définition des parametres de la simulation
 parametre;
@@ -16,7 +17,7 @@ setup;
 emetteur;
 
 % Passage à travers le canal
-% canal;
+canal;
 
 % Calcul des opérations effectuées dans le récepteur
 % recepteur;
