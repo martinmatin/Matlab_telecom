@@ -14,12 +14,8 @@ tc = -Tb:(2*Tb)/(length(tb)-1):Tb; %vecteur
 
 % === Les porteuses ===
 f = [0:N-1]; % Vecteur de 0 à  N-1
-f = f*((pi/Tb)*4);  %Omega, coefficients des porteuses 
-fw = f/(2*pi); %porteuses en Hertz
-f = cos(f'.*tc); % Matrices de porteuses
-
-
-
+f = f*((2/Tb));  % coefficients des porteuses 
+f = cos(2*pi.*f'.*tc); % Matrices de porteuses
 
 % == Sortie Emetteur ==
 figure('Name','Sortie Emetteur')
@@ -74,12 +70,14 @@ figure('Name','Sortie Emetteur')
     hold on
         for freq = 1:N
             NSamples = length(convFirMat(freq,:));
-            fftEmetteur = fft(convFirMat(freq,:));
-            fftEmetteur = abs(fftshift(fftEmetteur));
-            FreqAxis = NSamples/2*linspace(-1,1,NSamples);
-            plot(FreqAxis,fftEmetteur);
+            fftEmetteur = fft(convFirMat(freq,:)); 
+            fftEmetteur = abs(fftEmetteur)/numel(fftEmetteur);
+            %FreqAxis = NSamples/2*linspace(-1,1,NSamples);
+            Fs = R*sps;
+            stem(fftEmetteur(1:Fs));
+            grid minor
             
-            %plot(abs(fft(convFirMat(freq,:)))) % Pour chaque canal, on prend l'absolu de la FFT.  
+            
         end
     hold off
     title('FFT du message convolué')

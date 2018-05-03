@@ -2,6 +2,7 @@
 
 % == EMETTEUR == 
 
+
 Ms = [1,0,1,0]; % bits, nombre de bits de la séquence pilote d'une trame
 Md = 6; % nombre de bits de données dans une trame
 R = 1000; % bits/s, débit binaire
@@ -22,7 +23,7 @@ alpha = 0.4;  %
 %Generate the square-root, raised cosine filter coefficients.
 rolloff = 0.4;     % Rolloff factor, appelé Alpha = facteur de descente
 span = 4;           % Filter span in symbols, 
-sps = 10;            % Samples per symbol, surénchantillonnage
+sps = 64;            % Samples per symbol, surénchantillonnage
 if sps < (4*N-2)
     error('Erreur dans le choix du paramètre Beta, il doit être sup. ou égal à (4*N)-2')
 end
