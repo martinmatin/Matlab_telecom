@@ -1,89 +1,61 @@
-% === Message original ===
-MSG = [Ms, randi([0 1],1,Md)]; % Contenu du message
-T = 0:Tb:Tb*(length(MSG)-1);  % Vecteur temps pour les messages 
+%% === Message original ===
+% Message avec la séquence de démarrage
+MSG = [Ms, randi([0 1],1,Md)];
+% Vecteur temps pour les messages 
+T = 0:Tb:Tb*(length(MSG)-1);  
 
-% === Message en symboles ===
+%Codage PAM
 MSG_symb = 2*MSG -1; % Codage des bits en symboles, si 0 --> -1, si 1 -->- +1
+%Suréchantillonnage Msg
+MSG_symb_os = upsample(MSG_symb, beta); % over sample
+% Vecteur temps pour les messages suréchantillonnés 
+T_os = 0:Tb_os:Tb_os*((length(MSG)*beta)-1);  
 
 % === Cosinus surélevé ===
-b = rcosdesign(rolloff,span,sps,'normal');  % la fonction rcos
-b = b/max(b);  % la fonction ramenée à 1
+% Filtre fir
+b = rcosdesign(roll,span,beta,'normal');
 
-tb = -128:1:128; 
-tc = -Tb:(2*Tb)/(length(tb)-1):Tb; %vecteur 
+%vecteur temps pour le filtre FIR
+t_fir = -Tb*L:Tb_os:Tb*L;
+        
+
+%% Modulation
+
+tb = -128:1:128; % a supprimer
 
 % === Les porteuses ===
 f = [0:N-1]; % Vecteur de 0 à  N-1
-f = f*((2/Tb));  % coefficients des porteuses 
-f = cos(2*pi.*f'.*tc); % Matrices de porteuses
+rad_coef = f*(4*pi*(1/Tb));  % coefficients des porteuses  en rad
+f_coef = rad_coef.*(1/(2*pi)); % coefficients des porteuses  en Hertz
+f = cos(rad_coef'.*t_fir); % Matrices de porteuses
 
-% == Sortie Emetteur ==
-figure('Name','Sortie Emetteur')
-% suptitle('Exo Télécom')
-  subplot(2,2,1) % Le message de symboles
-    stem(T,MSG_symb, '-.or')
-    axis([-0.002 inf -1.5 1.5])
-    title('Message')
-    xlabel('xlabel')
-    ylabel('ylabel')
-    
-    
-  subplot(2,2,3)  % Les filtres FIR
-    hold on 
-        for freq = 1:N
-            plot(tb, (f(freq,:).*b))
-        end
-    hold off
-    grid
-    xticks([-128 -64 0 64 128])
-    axis([-128 128 -1 1])
-    title('Filtre FIR')
-    xlabel('xlabel')
-    ylabel('ylabel')
-    legend('y = label1','y = label2)','Location','northwest')
-    
-  subplot(2,2,2)  % Le message convolué avec le filtre FIR
-    hold on
-        for freq = 1:N
-            if freq == 1 % Je fais la première fréquence différement des autres pour créer la matrice de messages convolués,
-                yo = upfirdn(MSG_symb,(f(freq,:).*b),64); 
-                yo = yo*G;
-                convFirMat = yo; % matrice avec l'ensemble des message convolués, on multiplie chaque fois le signal avec le gain
-                plot(yo);
-                plot(ones(size(yo)) * G);
 
-            else 
-                yo = upfirdn(MSG_symb,(f(freq,:).*b),64);
-                yo = yo*G;
-                convFirMat = [convFirMat;yo]; % matrice avec l'ensemble des message convolués
-                plot(yo);
-            end
-        end
-    hold off
-    grid 
-    title('Message convolué avec filtre FIR')
-    xlabel('xlabel')
-    ylabel('Volts')
-    legend('y = label1','y = label2)','Location','southwest')
-     
-  subplot(2,2,4)  % Le fft du message convulé
-    hold on
-        for freq = 1:N
-            NSamples = length(convFirMat(freq,:));
-            fftEmetteur = fft(convFirMat(freq,:)); 
-            fftEmetteur = abs(fftEmetteur)/numel(fftEmetteur);
-            %FreqAxis = NSamples/2*linspace(-1,1,NSamples);
-            Fs = R*sps;
-            stem(fftEmetteur(1:Fs));
-            grid minor
-            
-            
-        end
-    hold off
-    title('FFT du message convolué')
-    xlabel('xlabel')
-    ylabel('ylabel')
-    legend('y = label1','y = label2','Location','northwest')
-   
-    
-% == Sortie canal ===
+%Matrice des FIR modulés en amplitude selon la fréquence
+bm = f.*b;
+
+%% Normalisatoin 
+% On met l'ensemble des points au carré
+bm_2 = bm.^2;
+% On somme chaque vecteurs
+bm_2_sum = sum(bm_2');
+% On divise par beta
+bm_2_sum_beta = bm_2_sum./beta;
+% On prend la racine carré et on obtient une matrice avec les facteurs de
+% normalisation
+bm_facteur = sqrt(bm_2_sum_beta');
+%On divise chaque ligne par le facteur correspondant
+bm_norm = bm./bm_facteur;
+
+
+%% Convolution
+msgConv = conv2(1,MSG_symb_os,bm_norm);
+
+
+%% DAC
+%Vecteur temps DAC. 
+%Nombre de symbole * nbr sample par symb * suréchantilonnage gamma ADC
+msg_length = ((lMsg+span)*beta*gam);
+% Sortie = somme des intérpolations
+msgDAC = sum(interpft(msgConv,((lMsg+span)*beta*gam),2));
+
+%% 
