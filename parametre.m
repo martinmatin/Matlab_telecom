@@ -27,7 +27,7 @@ span = 8;           % Filter span in symbols,
 beta = N*4;            % Samples per symbol, surénchantillonnage
 L= span/2;         % troncage. Il y a un facteur 2 entre rcosfir et rcosdesign
 
-R_os = beta*R;  % Fréquence de suréchantillonnage
+R_os = beta*R;  % Fréquence de suréchantillonnage beta
 Tb_os = 1/R_os;
 gam = N*10; % Suréchantillonnage ADC
 f_analog = beta*gam*R;

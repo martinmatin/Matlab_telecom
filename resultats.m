@@ -2,14 +2,14 @@
 
 %% Emetteur
 % 
-% % Message
-% figure ('Name','Message')
-%     subplot(2,1,1)
-%         stem(T,MSG_symb, '-.or')
-%         title('Message original avec PAM 2')
-%     subplot(2,1,2)
-%         stem(T_os,MSG_symb_os)
-%          title('Message suréchantillonné par beta')
+% Message
+figure ('Name','Message')
+    subplot(2,1,1)
+        stem(T,MSG_symb, '-.or')
+        title('Message original avec PAM 2')
+    subplot(2,1,2)
+        stem(T_os,MSG_symb_os)
+         title('Message suréchantillonné par beta')
 
 % Convolution avec filtres
 figure('Name','Convolution')
@@ -24,7 +24,7 @@ figure('Name','Convolution')
         title('Sortie du message du ADC')
     subplot(2,2,4)
     
-        fs = beta*R*gam;
+        fs = beta*R;
         [freq,amp]= fftplot(msg_noise,fs);
         plot(freq,amp) 
         title('Single-Sided Amplitude Spectrum of X(t)')
@@ -35,20 +35,20 @@ figure('Name','Convolution')
         
         
 %% Canal
-figure('Name','Canal')
-    plot(msgDAC')
-    hold on
-    plot(msg_noise')
-    hold off
+% figure('Name','Canal')
+%     plot(msgDAC')
+%     hold on
+%     plot(msg_noise')
+%     hold off
     
 %% Filtrage
-figure('Name','Filtre de réception')
-    subplot(2,2,1)
-        [freq,amp]= fftplot(msg_noise,f_analog);
-        plot(freq,amp) 
-        title('Message original')
-        xlabel('f (Hz)')
-        ylabel('|P1(f)|')
-        xlim([0, (N-0.5)*2*1000])
-        grid minor
-    subplot(2,2,2)
+% figure('Name','Filtre de réception')
+%     subplot(2,2,1)
+%         [freq,amp]= fftplot(msg_noise,f_analog);
+%         plot(freq,amp) 
+%         title('Message original')
+%         xlabel('f (Hz)')
+%         ylabel('|P1(f)|')
+%         xlim([0, (N-0.5)*2*1000])
+%         grid minor
+%     subplot(2,2,2)

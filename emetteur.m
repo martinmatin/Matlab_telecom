@@ -50,11 +50,10 @@ bm_norm = bm./bm_facteur;
 %% Convolution
 msgConv = conv2(1,MSG_symb_os,bm_norm);
 
-
 %% DAC
 %Vecteur temps DAC. 
 %Nombre de symbole * nbr sample par symb * suréchantilonnage gamma ADC
-msg_length = ((lMsg+span)*beta*gam);
+% msg_length = ((lMsg+span)*beta*gam);
 % Sortie = somme des intérpolations
 msgDAC = sum(interpft(msgConv,((lMsg+span)*beta*gam),2));
 
