@@ -24,13 +24,14 @@ G = U ; % Le gain d'amplification du signal = la tension car de base on a une te
 %Generate the square-root, raised cosine filter coefficients.
 roll = 0.4;     % Rolloff factor, appelé Alpha = facteur de descente
 span = 8;           % Filter span in symbols, 
-beta = N*4;            % Samples per symbol, surénchantillonnage
+beta = N*6;            % Samples per symbol, surénchantillonnage
 L= span/2;         % troncage. Il y a un facteur 2 entre rcosfir et rcosdesign
 
 R_os = beta*R;  % Fréquence de suréchantillonnage beta
 Tb_os = 1/R_os;
 gam = N*10; % Suréchantillonnage ADC
 f_analog = beta*gam*R;
+
 
 if beta < (4*N-2)
     error('Erreur dans le choix du paramètre Beta, il doit être sup. ou égal à (4*N)-2')
@@ -43,3 +44,4 @@ noise_snr = 17; % Puissance du bruit déterminé par le signal/noise ratio
 
 %===Filter ===
 filter_order = 10;
+filter_lg = 128; % longueur du filtre

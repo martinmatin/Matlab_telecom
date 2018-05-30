@@ -3,13 +3,13 @@
 %% Emetteur
 % 
 % Message
-figure ('Name','Message')
-    subplot(2,1,1)
-        stem(T,MSG_symb, '-.or')
-        title('Message original avec PAM 2')
-    subplot(2,1,2)
-        stem(T_os,MSG_symb_os)
-         title('Message suréchantillonné par beta')
+% figure ('Name','Message')
+%     subplot(2,1,1)
+%         stem(T,MSG_symb, '-.or')
+%         title('Message original avec PAM 2')
+%     subplot(2,1,2)
+%         stem(T_os,MSG_symb_os)
+%          title('Message suréchantillonné par beta')
 
 % Convolution avec filtres
 figure('Name','Convolution')
@@ -24,7 +24,7 @@ figure('Name','Convolution')
         title('Sortie du message du ADC')
     subplot(2,2,4)
     
-        fs = beta*R;
+        fs = beta*R*gam;
         [freq,amp]= fftplot(msg_noise,fs);
         plot(freq,amp) 
         title('Single-Sided Amplitude Spectrum of X(t)')

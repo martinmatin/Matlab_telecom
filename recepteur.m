@@ -11,28 +11,40 @@ Fc = repmat([-bp,bp],N-1,1);
 % On obtient un matrice avec les fréquences de coupure sauf pour la bande de base
 Fc = bsxfun(@plus,Fc,f_coef(2:N)');
 
+
 %% Génération des filtres
 
 % Diminution du sampling
-signal = downsample(msg_noise,gam);
-msg_length = ((lMsg+span)*beta);
-t_cheby = R_os/2*(0:1:(msg_length-1))/msg_length; % -1 car on commence à 0
+s1 = downsample(msg_noise,gam)';
 
-% 
-% [b,a] = cheby1(10,0.5,300*2*pi,'low');
-% figure('Name','freqs cheby')
-% freqz(b,a,t_cheby*2*pi);
 
-rc = (1000/R_os)*2;
-[b,a] = cheby1(10,0.5,rc);
-freqz(b,a)
-dOut = filter(b,a,signal);
+%On divise Fc par R_os car il s'agit de dire le poid par sample
+Fc = Fc./R_os.*2;
+
+% => Pour le premier cana
+% On définit la fréquence de coupure
+rca = (bp/R_os)*2;
+% On créer les coefficients du filtre 
+[b,a] = cheby1(10,0.5,rca);
+%Réponse temporelle
+filter_low = ifft(freqz(b,a,filter_lg,'Whole',R_os));
+%création d'une matrice de filtre à partir de ce filtre pour pouvoir ajoute
+%les filtres des autres canaux
+filter_mat = repmat(filter_low,1,N);
+
+for i= 2:N   
+    [b,a] = cheby1(10,0.5,Fc(i-1,:));
+    filter_mat(:,i) = ifft(freqz(b,a,filter_lg,'Whole',R_os));
+end
+% On convolue pour séparer les canaux
+s2 = conv2(s1,1,filter_mat);
+
 
 
 
 figure
 subplot(2,2,1)
-    [freq,amp]= fftplot(signal,R_os);
+    [freq,amp]= fftplot(s1,R_os);
     plot(freq,amp) 
     title('Message original')
     xlabel('f (Hz)')
@@ -40,17 +52,22 @@ subplot(2,2,1)
     xlim([0, (N-0.5)*2*1000])
     grid minor
 subplot(2,2,2)
-    plot(signal)
+     plot(msgConv')
 subplot(2,2,3)
-    [freq,amp]= fftplot(dOut,R_os);
-    plot(freq,amp) 
-    title('Message original')
-    xlabel('f (Hz)')
-    ylabel('|P1(f)|')
-    xlim([0, (N-0.5)*2*1000])
-    grid minor
+    for i = 1:N
+        
+        [freq,amp]= fftplot(s2(:,i),R_os);
+        plot(freq,amp) 
+        hold on
+        title('Message original')
+        xlabel('f (Hz)')
+        ylabel('|P1(f)|')
+        xlim([0, (N-0.5)*2*1000])
+        grid minor
+    end
+    hold off
 subplot(2,2,4)
-    plot(dOut)
+    stem(s2)
     
 % 
 % rate = f_analog;
