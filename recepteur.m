@@ -26,6 +26,12 @@ Fc = Fc./R_os.*2;
 rca = (bp/R_os)*2;
 % On créer les coefficients du filtre 
 [b,a] = cheby1(10,0.5,rca);
+
+% Pour plotter les filtres
+% figure
+%     freqz(b,a,filter_lg,R_os)
+%     hold on
+
 %Réponse temporelle
 filter_low = ifft(freqz(b,a,filter_lg,'Whole',R_os));
 %création d'une matrice de filtre à partir de ce filtre pour pouvoir ajoute
@@ -34,89 +40,69 @@ filter_mat = repmat(filter_low,1,N);
 
 for i= 2:N   
     [b,a] = cheby1(10,0.5,Fc(i-1,:));
+    
     filter_mat(:,i) = ifft(freqz(b,a,filter_lg,'Whole',R_os));
 end
+%% Séparation des canaux
 % On convolue pour séparer les canaux
-s2 = conv2(s1,1,filter_mat);
+signal_sep = conv2(s1,1,filter_mat);
+bm_test = bm_norm';
+signal_demod = signal_sep;
+%création d'une matrice
+%% Démodulation
+
+for i =2:N
+   signal_demod(:,i) = amdemod(signal_sep(:,i),f_coef(i),R_os);
+end
+
+signal_fir = conv2(bm_test(:,1),1,signal_demod);
+signal_fir = signal_fir/7;
 
 
+%% Corélation
+% On génère la séquence de base démarrage pour voir où commence le message
+msg_start = 2*Ms-1;
+msg_start = upsample(msg_start, beta);
+% On convolue avec le fir
+msg_start_fir = conv(msg_start,bm(1,:));
 
+% Déterminer où commencer à l'aide de la corrélation
+[r, lags] = xcorr(msg_start_fir,signal_fir(:,1));
+[max_r, index_max_r]=max(r);
+start_ind = lags(index_max_r);
+start_sync = abs(start_ind)+((L)*beta)+1;
 
+%% Construction des messages échantillonnés Beta
+% Construction d'une matrice qui accueilla les messages
+msg_final = zeros(lMsg,N);
 figure
-subplot(2,2,1)
-    [freq,amp]= fftplot(s1,R_os);
-    plot(freq,amp) 
-    title('Message original')
-    xlabel('f (Hz)')
-    ylabel('|P1(f)|')
-    xlim([0, (N-0.5)*2*1000])
-    grid minor
-subplot(2,2,2)
-     plot(msgConv')
-subplot(2,2,3)
-    for i = 1:N
+plot(signal_fir)
+for i=1:N
+    % On construit les messages en fonction de la période d'échantillonnage
+    % Beta
+    i
+    msg_construct = signal_fir(start_sync:beta:start_sync+((lMsg-1)*beta),i);
+    % Le message est passé dans l'algorithme de décision
+    for j=1:length(msg_construct)
         
-        [freq,amp]= fftplot(s2(:,i),R_os);
-        plot(freq,amp) 
-        hold on
-        title('Message original')
-        xlabel('f (Hz)')
-        ylabel('|P1(f)|')
-        xlim([0, (N-0.5)*2*1000])
-        grid minor
+        if msg_construct(j)> 0
+            msg_construct(j)=1;
+        else
+            msg_construct(j)=0;
+        end
     end
-    hold off
-subplot(2,2,4)
-    stem(s2)
-    
-% 
-% rate = f_analog;
-% freq = 3000;
-
-% fc = 300;
-% fs = 1000;
-% 
-% [b,a] = butter(6,fc/(fs/2));
-% freqs(b,a)
-% % fc = 300;
-% % fs = 10000;
-% 
-% 
-% 
-% fvtool(b,a)
-% 
-% [d,c] = cheby1(10,0.05,Fc(1,:),'bandpass','s');
-% 
-% www = ifft(abs(freqs(b,a,t_cheby*2*pi)),'symmetric'); % Du ajouté 2 pi je sais pas pq
-% % wwww = conv(msg_noise,www)
-% wwww = conv2( 1,msg_noise, www);
-
+    msg_final(:,i) = msg_construct;
+end    
+msg_final
 % figure
-% subplot(3,1,1)
-%     [freq,amp]= fftplot(msg_noise,f_analog);
-%     plot(freq,amp) 
-%     title('Message original')
-%     xlabel('f (Hz)')
-%     ylabel('|P1(f)|')
-%     xlim([0, (N-0.5)*2*1000])
-%     grid minor
-% subplot(3,1,2)
-%     plot(t_cheby*2*pi,abs(freqs(b,a,t_cheby*2*pi)))
-%     xlim([0 (N-0.5)*2*1000]);
-%     ylim([0 1.5])
-%     
-%     hold on 
-%     plot(t_cheby,abs(freqs(d,c,t_cheby)))
-%     hold off
-% subplot(3,1,3)
-%     [freqC,ampC]= fftplot(y,f_analog);
-%     plot(freqC,ampC) 
-% 
-% figure
-%     plot(y)
-%     hold on 
-%     plot(msg_noise)
-%     hold off
+%     subplot(3,1,1)
+%     stem(T,MSG_symb, '-.or')
+%     subplot(3,1,2)
+%     stem(msg_construct)
+%     subplot(3,1,3)
+%     plot(signal_fir)
+
+
 %% Réponse impulsionnelle
 % For nearly conjugate symmetric vectors, you can compute the inverse
 % Fourier transform faster by specifying the 'symmetric' option, which also

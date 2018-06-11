@@ -2,7 +2,7 @@
 
 %% Emetteur
 % 
-% Message
+%% Message
 % figure ('Name','Message')
 %     subplot(2,1,1)
 %         stem(T,MSG_symb, '-.or')
@@ -11,7 +11,7 @@
 %         stem(T_os,MSG_symb_os)
 %          title('Message suréchantillonné par beta')
 
-% Convolution avec filtres
+%% Convolution avec filtres
 figure('Name','Convolution')
     subplot(2,2,1)
         plot(bm_norm')
@@ -52,3 +52,45 @@ figure('Name','Convolution')
 %         xlim([0, (N-0.5)*2*1000])
 %         grid minor
 %     subplot(2,2,2)
+
+%% Séparation des signaux plus autre chose
+figure
+subplot(2,2,1)
+    [freq,amp]= fftplot(s1,R_os);
+    plot(freq,amp) 
+    title('Message original')
+    xlabel('f (Hz)')
+    ylabel('|P1(f)|')
+    xlim([0, (N-0.5)*2*1000])
+    grid minor
+subplot(2,2,2)
+     plot(signal_sep)
+subplot(2,2,3)
+    for i = 1:N
+        
+        [freq,amp]= fftplot(signal_sep(:,i),R_os);
+        plot(freq,amp) 
+        hold on
+        title('Message original')
+        xlabel('f (Hz)')
+        ylabel('|P1(f)|')
+        xlim([0, (N-0.5)*2*1000])
+        grid minor
+    end
+    hold off
+subplot(2,2,4)
+    
+    
+    %plot(tt,signal_mod',ttt,wwtt,'o')
+    plot(signal_fir)
+
+%% Démodulation et filtrage idéal
+figure('Name','SEP')
+    subplot(3,1,1)
+    plot(signal_sep)
+    subplot(3,1,2)
+    plot(signal_demod)
+    subplot(3,1,3)
+    plot(signal_fir)
+    
+ 

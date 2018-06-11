@@ -2,8 +2,8 @@
 
 % == EMETTEUR == 
 
-Ms = [1,0,1,0]; % bits, nombre de bits de la séquence pilote d'une trame
-Md = 1; % nombre de bits de données dans une trame
+Ms = [1,0,1,0,1,1,0,0,1,0,1,0]; % bits, nombre de bits de la séquence pilote d'une trame
+Md = 100; % nombre de bits de données dans une trame
 lMsg = length(Ms)+Md; % Longueuur d'une trame
 R = 1000; % bits/s, débit binaire
 Tb = 1/R; % secondes par bit 
@@ -17,8 +17,6 @@ P = 0.020; % Puissance voulue en Watt par canal
 U = sqrt(P*Zc); % Tension nécessaire sur le canal pour respecter la puissance voulue
 
 G = U ; % Le gain d'amplification du signal = la tension car de base on a une tension de 1
-
-
  
 
 %Generate the square-root, raised cosine filter coefficients.
@@ -45,3 +43,6 @@ noise_snr = 17; % Puissance du bruit déterminé par le signal/noise ratio
 %===Filter ===
 filter_order = 10;
 filter_lg = 128; % longueur du filtre
+
+%===démodulation
+s_decide = 0.5; % Seuil de décision

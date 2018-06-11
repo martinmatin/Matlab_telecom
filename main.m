@@ -27,8 +27,9 @@ canal;
 %% Reception
 recepteur;
 % Manque troncature du filtre
+% Manque mise à l'échelle pour respecter la dynamique de l'ADC
 
-resultats;
+%resultats;
 
 % Affichage des résultats
 
