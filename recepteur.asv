@@ -116,7 +116,7 @@ end
 %     stem(T_msg_sample,msg_sample(:,2))
 %     hold off
 %     xlabel('Nombre échantilllon')
-
+msg_final
 
 
 % figure
@@ -135,27 +135,5 @@ end
 % devant
 
 %% Taux d'erreur binaire
-%Calculé pour le premier canal, msg under test
-msg_ut = msg_final(:,1);
-err = sum(xor(MSG',msg_ut))/length(MSG);
-
-
-bnr_test = 10:-0.5:1;
-
-bnr_result = [0,0,0,0,0,0,9.97e-05,9.9701e-05,1.9940e-04,1.99401e-04,0,1.9940e-04,7.976071784646061e-04, 0.001495513459621, 0.002293120638086,0.003688933200399,0.003589232303091,0.004386839481555,0.007178464606181];
-bnr_val = [bnr_test' bnr_result']
-
-%Courbe théorique
-% 
-% t_pe = 1:0.1:10;
-% pe=0.5*erfc(10.^sqrt(t_pe));
-t = linspace(0, 10, 1e3);
-    y = 1/2 * erfc(sqrt(10.^(t/10)));
-figure
-    semilogy(t,y)
-    hold on
-    plot(bnr_val (:,1), bnr_val (:,2), 'x', 'LineWidth', 2, 'MarkerSize',10);
-    xlabel('Eb/N0 (dB)')
-    ylabel('BER')
-
+%Calculé po
 

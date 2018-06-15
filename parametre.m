@@ -2,8 +2,8 @@
 
 % == EMETTEUR == 
 
-Ms = [1,0,1,0,1,1,0,0,1,0,1,0]; % bits, nombre de bits de la séquence pilote d'une trame
-Md = 100; % nombre de bits de données dans une trame
+Ms = [1,0,1,0,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0]; % séquence pilote
+Md = 1000; % nombre de bits de données dans une trame
 lMsg = length(Ms)+Md; % Longueuur d'une trame
 R = 1000; % bits/s, débit binaire
 Tb = 1/R; % secondes par bit 
@@ -37,8 +37,8 @@ end
 
 
 %=== CANAL ===
-Att = 0.9; % atténuation du signal du au canal
-noise_snr = 17; % Puissance du bruit déterminé par le signal/noise ratio
+Att = 0.6; % atténuation du signal du au canal
+noise_snr = 10; % Puissance du bruit déterminé par le signal/noise ratio
 
 %===Filter ===
 filter_order = 10;

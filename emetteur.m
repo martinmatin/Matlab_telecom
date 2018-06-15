@@ -5,7 +5,7 @@ MSG = [Ms, randi([0 1],1,Md)];
 T = 0:Tb:Tb*(length(MSG)-1);  
 
 %Codage PAM
-MSG_symb = 2*MSG -1; % Codage des bits en symboles, si 0 --> -1, si 1 -->- +1
+MSG_symb = 2*MSG -1; % Codage des bits en symboles, si 0 --> -1, si 1 --> +1
 %Suréchantillonnage Msg
 MSG_symb_os = upsample(MSG_symb, beta); % over sample
 % Vecteur temps pour les messages suréchantillonnés 
@@ -33,7 +33,7 @@ f = cos(rad_coef'.*t_fir); % Matrices de porteuses
 %Matrice des FIR modulés en amplitude selon la fréquence
 bm = f.*b;
 
-%% Normalisatoin 
+%% Normalisation 
 % On met l'ensemble des points au carré
 bm_2 = bm.^2;
 % On somme chaque vecteurs
@@ -51,8 +51,8 @@ bm_norm = bm./bm_facteur;
 msgConv = conv2(1,MSG_symb_os,bm_norm);
 
 %% DAC
-%Vecteur temps DAC. 
-%Nombre de symbole * nbr sample par symb * suréchantilonnage gamma ADC
+%Vecteur temps DAC = 
+%Nombre de symbole * nbr sample par symb * suréchantilonnage gamma DAC
 % msg_length = ((lMsg+span)*beta*gam);
 % Sortie = somme des intérpolations
 msgDAC = sum(interpft(msgConv,((lMsg+span)*beta*gam),2));
